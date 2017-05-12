@@ -6,8 +6,13 @@ import {
 	MenuItem,
 } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-
-const NavBarComponent = ({counter = 'counter'})=> (
+const FILTER = {
+  ALBUM: 'ALBUM',
+  ARTIST: 'ARTIST',
+  PLAYLIST: 'PLAYLIST',
+  TRACK: 'TRACK',
+}
+const NavBarComponent = ({counter = 'Counter', onFilterSelect})=> (
 	<Navbar  collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -17,15 +22,17 @@ const NavBarComponent = ({counter = 'counter'})=> (
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav className="nav-filter">
-        <NavDropdown eventKey={3} title='Filter' id='basic-nav-dropdown'>
-          <MenuItem eventKey={3.1}>Album</MenuItem>
-          <MenuItem eventKey={3.2}>Artist</MenuItem>
-          <MenuItem eventKey={3.3}>Playlist</MenuItem>
-          <MenuItem eventKey={3.3}>Track</MenuItem>
+        <NavDropdown eventKey={3} title='Filter' id='dropdown' onSelect={onFilterSelect}>
+          <MenuItem eventKey={FILTER.ALBUM}>Album</MenuItem>
+          <MenuItem eventKey={FILTER.ARTIST}>Artist</MenuItem>
+          <MenuItem eventKey={FILTER.PLAYLIST}>Playlist</MenuItem>
+          <MenuItem eventKey={FILTER.TRACK}>Track</MenuItem>
         </NavDropdown>
       </Nav>
       <Nav pullRight>
-        <li className="counter">{counter}</li>
+        <Navbar.Brand>
+          <li id="counter">{counter}</li>
+        </Navbar.Brand>
       </Nav>
     </Navbar.Collapse>
   </Navbar>

@@ -23,10 +23,11 @@ a.search-icon:hover {
   color: #777;
 }
 
-.counter {
+#counter {
   padding: 15px 10px 15px 10px;
   background-color: white;
   color: #555;
+  font-size: 14px;
 }
 
 ul.results {

@@ -2,19 +2,23 @@ import React from 'react'
 
 import SearchResultItem from '../components/SearchResultItem'
 import NavBar from '../components/NavBar'
-
+import { getSearchQuery, } from '../api'
 import './searchScene.css'
 
-const SearchScene = (props)=>(
+const SearchScene = ({onSearch, query, type, hasError, onFilterSelect})=>(
 	<div className="body">
-	<NavBar />
+	<NavBar onFilterSelect={onFilterSelect}/>
 		<div className="container">
 	      <form className="form-horizontal">
 	        <div className="form-group form-group-lg">
 	          <div className="col-xs-12 col-sm-8 col-sm-offset-2">
 	            <input className="form-control" type="text" id="formGroupInputLarge" placeholder="Search..."/>
-	            <a className="search-icon" href=""><i className="fa fa-search" aria-hidden="true"></i></a>
-	            <p className="error">Please fill out the form.</p>
+	            <a href={`#${getSearchQuery({query, type})}`} onClick={onSearch} className="search-icon"><i className="fa fa-search" aria-hidden="true"></i></a>
+	            {
+	            	hasError
+	            	? <p className="error">Please fill out the form.</p>
+	            	: null
+	            }
 	          </div>
 	        </div>
 	      </form>
