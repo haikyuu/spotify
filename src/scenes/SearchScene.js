@@ -1,9 +1,11 @@
 import React from 'react'
 
-import { withReducer, compose, pure, withHandlers, } from 'recompose'
+import { withReducer, compose, pure, withHandlers, lifecycle, } from 'recompose'
 import SearchResultItem from '../components/SearchResultItem'
 import NavBar, { FILTER, } from '../components/NavBar'
 import { getSearchQuery, search, } from '../api'
+
+import queryString from 'query-string'
 
 import './searchScene.css'
 
@@ -20,7 +22,7 @@ const SearchScene = ({state, dispatch, onSearchClick})=>(
 	          	: <input onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search...${state.filter}`}/>
 
 	          }
-	            <a href={`#${getSearchQuery({query: state.query, filter: state.filter, })}`} onClick={onSearchClick} className="search-icon"><i className="fa fa-search" aria-hidden="true"></i></a>
+	            <a href={`#${getSearchQuery({query: state.query, filter: state.filter, }).replace('search?', '')}`} onClick={onSearchClick} className="search-icon"><i className="fa fa-search" aria-hidden="true"></i></a>
 	            {
 	            	state.hasError
 	            	? <p className="error">{state.errorText}</p>
@@ -71,6 +73,13 @@ const searchReducer = (state, action)=>{
 				hasError: false,
 				result: action.result.items,
 			}
+		case 'ON_REQUEST_FAILURE':
+			return {
+				...state,
+				isLoading: false,
+				hasError: true,
+				result: 'There was an error processing your request, please try again later.',
+			}
 		case 'TRIGGER_ERROR':
 			return {
 				...state,
@@ -81,17 +90,21 @@ const searchReducer = (state, action)=>{
 			return state
 	}
 }
+
+const query = queryString.parse(window.location.hash).q
+const filter = queryString.parse(window.location.hash).type
+
 const enhance = compose(
 	withReducer('state', 'dispatch', searchReducer, {
-		query: '',
-		filter: FILTER.ARTIST,
+		query: query || '',
+		filter: filter || FILTER.ARTIST,
 		result: [],
 		hasError: false,
 		isLoading: false,
 		errorText: '',
 	}),
 	withHandlers({
-		onSearchClick: ({state, dispatch, }) => () =>{
+		onSearchClick: ({state, dispatch,}) => () =>{
 			if (state.isLoading) {
 				return
 			}
@@ -101,14 +114,19 @@ const enhance = compose(
 			dispatch({ type: 'ON_REQUEST_START', })
 			search({query: state.query, filter: state.filter, }).then(result=>{
 				let type = `${state.filter.toLowerCase()}s`
-				console.log('result.data[type]', result.data[type])
 				dispatch({ type: 'ON_REQUEST_SUCCESS', result: result.data[type], })
 
 			}).catch(error=>{
 				dispatch({ type: 'ON_REQUEST_FAILURE', })
-				console.log('error', error)
 			})
-		}
+		},
+	}),
+	lifecycle({
+		componentDidMount: function(){
+			if (this.props.state.query.length > 0) {
+				this.props.onSearchClick()
+			}
+		},
 	}),
 	pure,
 )
