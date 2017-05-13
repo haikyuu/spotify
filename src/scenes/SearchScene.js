@@ -18,8 +18,8 @@ const SearchScene = ({state, dispatch, onSearchClick})=>(
 	          <div className="col-xs-12 col-sm-8 col-sm-offset-2">
 	          {
 	          	state.isLoading
-	          	? <input readOnly onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search...${state.filter}`}/>
-	          	: <input onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search...${state.filter}`}/>
+	          	? <input value={state.query} readOnly onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
+	          	: <input value={state.query} onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
 
 	          }
 	            <a href={`#${getSearchQuery({query: state.query, filter: state.filter, }).replace('search?', '')}`} onClick={onSearchClick} className="search-icon"><i className="fa fa-search" aria-hidden="true"></i></a>
@@ -39,7 +39,7 @@ const SearchScene = ({state, dispatch, onSearchClick})=>(
 				state.result.map( ({id, name, images})=>(
 	          		<SearchResultItem 
           				key={id}
-          				imageUrl={images.length? images[0].url : 'http://placekitten.com/64/64'}
+          				imageUrl={images && images.length? images[0].url : 'http://placekitten.com/64/64'}
 	          		 	name={name}
 	          		/>
 				))
@@ -78,7 +78,7 @@ const searchReducer = (state, action)=>{
 				...state,
 				isLoading: false,
 				hasError: true,
-				result: 'There was an error processing your request, please try again later.',
+				errorText: 'There was an error processing your request, please try again later.',
 			}
 		case 'TRIGGER_ERROR':
 			return {
