@@ -9,7 +9,7 @@ import queryString from 'query-string'
 
 import './searchScene.css'
 
-const SearchScene = ({state, dispatch, onSearchClick})=>(
+const SearchScene = ({state, dispatch, onSearchClick, onKeyPress})=>(
 	<div className="body">
 	<NavBar counter={state.result.length} onFilterSelect={({filter})=> dispatch({ type: 'ON_FILTER_CHANGE', filter, })}/>
 		<div className="container">
@@ -18,8 +18,8 @@ const SearchScene = ({state, dispatch, onSearchClick})=>(
 	          <div className="col-xs-12 col-sm-8 col-sm-offset-2">
 	          {
 	          	state.isLoading
-	          	? <input value={state.query} readOnly onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
-	          	: <input value={state.query} onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
+	          	? <input onKeyPress={onKeyPress} value={state.query} readOnly onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
+	          	: <input onKeyPress={onKeyPress} value={state.query} onChange={(event)=> dispatch({ type: 'ON_QUERY_CHANGE', query: event.target.value})} className="form-control" type="text" id="formGroupInputLarge" placeholder={`Search... ${state.filter.toLowerCase()}s`}/>
 
 	          }
 	            <a href={`#${getSearchQuery({query: state.query, filter: state.filter, }).replace('search?', '')}`} onClick={onSearchClick} className="search-icon"><i className="fa fa-search" aria-hidden="true"></i></a>
@@ -120,6 +120,16 @@ const enhance = compose(
 				dispatch({ type: 'ON_REQUEST_FAILURE', })
 			})
 		},
+	}),
+	withHandlers({
+		onKeyPress: ({ onSearchClick, })=> e =>{
+	        if (e.keyCode === 13 || e.which === 13) {
+	        	onSearchClick()
+	            return false; // returning false will prevent the event from bubbling up.
+	        } else {
+	            return true;
+	        }
+		}
 	}),
 	lifecycle({
 		componentDidMount: function(){
