@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const getSearchQuery = ({query, type})=>(
-	`search?q=${query}&type=${type}`
+const getSearchQuery = ({query, filter})=>(
+	`search?q=${query}&type=${filter}`
 )
 
 const search = (props)=> {

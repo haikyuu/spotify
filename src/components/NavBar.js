@@ -6,13 +6,13 @@ import {
 	MenuItem,
 } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-const FILTER = {
+export const FILTER = {
   ALBUM: 'ALBUM',
   ARTIST: 'ARTIST',
   PLAYLIST: 'PLAYLIST',
   TRACK: 'TRACK',
 }
-const NavBarComponent = ({counter = 'Counter', onFilterSelect})=> (
+const NavBarComponent = ({counter, onFilterSelect})=> (
 	<Navbar  collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -22,7 +22,7 @@ const NavBarComponent = ({counter = 'Counter', onFilterSelect})=> (
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav className="nav-filter">
-        <NavDropdown eventKey={3} title='Filter' id='dropdown' onSelect={onFilterSelect}>
+        <NavDropdown eventKey={3} title='Filter' id='dropdown' onSelect={(filter)=>onFilterSelect({filter})}>
           <MenuItem eventKey={FILTER.ALBUM}>Album</MenuItem>
           <MenuItem eventKey={FILTER.ARTIST}>Artist</MenuItem>
           <MenuItem eventKey={FILTER.PLAYLIST}>Playlist</MenuItem>
