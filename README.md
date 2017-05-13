@@ -1,5 +1,13 @@
-Music Browser
+Spotify Search app
 ===
 
 This project is a simple music browser using the spotify API.
-It is build using React.
+
+[Try it online](https://haikyuu.github.io/spotify)
+===
+
+Run Locally
+===
+- npm install
+- npm run start
+
